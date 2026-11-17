@@ -1,0 +1,31 @@
+# Byte-compiled / cache & C extensions
+__pycache__/
+*.py[codz]
+*$py.class
+*.so
+
+# Distribution & packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments & secrets
+.env
+.venv/
+env/
+venv/
+
+# Testing, linters & notebooks
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+docs/_build/
+
+# IDEs & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
