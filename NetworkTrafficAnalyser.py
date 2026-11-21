@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from collections import defaultdict
 import warnings
+import requests
 warnings.filterwarnings('ignore')
 import json
 """
@@ -232,8 +233,12 @@ class NetworkTrafficAnalyzer:
                 }
                 violations.append(violation)
         self.policy_violations = violations
+
+        if violations:
+            self.send_alert(f"Обнаружено {len(violations)} нарушений", level='CRITICAL')
+
         self.log_audit_event('system', 'DETECT_VIOLATIONS', details=f'найдено {len(violations)} нарушений')
-        
+
         return violations
 
     def analyze_traffic_patterns(self):
@@ -299,6 +304,10 @@ class NetworkTrafficAnalyzer:
                 'severity': 'HIGH' if count < threshold * 2 else 'CRITICAL',
             })
         print(f"🚨 DDoS: {len(attacks)} секунд с превышением PPS (порог {threshold:.1f})")
+
+        if not attacks.empty:
+            self.send_alert(f"Обнаружено {len(attacks)} нарушений", level='CRITICAL')
+
         return attacks
     
     def generate_security_report(self):
@@ -358,6 +367,34 @@ class NetworkTrafficAnalyzer:
             print(f"{i}. {rec}")
 
         return recommendations
+
+    def send_alert(self, message, level='WARNING'):
+        """Отправка оповещения в Telegram (и Slack, если настроен)."""
+        text = f"[{level}] {self.company_name}: {message}"
+
+        # Telegram
+        if getattr(self, 'tg_token', None) and getattr(self, 'tg_chat_id', None):
+            try:
+                requests.post(
+                    f"https://api.telegram.org/bot{self.tg_token}/sendMessage",
+                    json={'chat_id': self.tg_chat_id, 'text': text},
+                    timeout=5,
+                )
+            except requests.RequestException as e:
+                print(f"⚠️ Telegram недоступен: {e}")
+
+        # Slack (входящий webhook)
+        if getattr(self, 'slack_webhook', None):
+            try:
+                requests.post(self.slack_webhook,
+                            json={'text': text}, timeout=5)
+            except requests.RequestException as e:
+                print(f"⚠️ Slack недоступен: {e}")
+
+        # связываем с п.2 — пишем в аудит
+        self.log_audit_event('system', 'SEND_ALERT',
+                            result='SUCCESS', details=text[:100])
+        return text
 
     def visualize_traffic(self):
         """

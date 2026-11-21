@@ -1,2 +1,6 @@
 {"timestamp": "2026-11-21T12:27:59.034278", "user": "system", "action": "DETECT_VIOLATIONS", "result": "SUCCESS", "details": "найдено 7 нарушений"}
 {"timestamp": "2026-11-21T12:27:59.044451", "user": "system", "action": "GENERATE_REPORT", "result": "SUCCESS", "details": "15000 событий"}
+{"timestamp": "2026-11-21T12:52:55.730316", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[CRITICAL] ТехноПрофи: Обнаружено 7 нарушений"}
+{"timestamp": "2026-11-21T12:52:55.730748", "user": "system", "action": "DETECT_VIOLATIONS", "result": "SUCCESS", "details": "найдено 7 нарушений"}
+{"timestamp": "2026-11-21T12:52:55.737485", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[CRITICAL] ТехноПрофи: Обнаружено 1 нарушений"}
+{"timestamp": "2026-11-21T12:52:55.741995", "user": "system", "action": "GENERATE_REPORT", "result": "SUCCESS", "details": "15000 событий"}
