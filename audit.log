@@ -1,0 +1,2 @@
+{"timestamp": "2026-11-21T12:27:59.034278", "user": "system", "action": "DETECT_VIOLATIONS", "result": "SUCCESS", "details": "найдено 7 нарушений"}
+{"timestamp": "2026-11-21T12:27:59.044451", "user": "system", "action": "GENERATE_REPORT", "result": "SUCCESS", "details": "15000 событий"}

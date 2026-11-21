@@ -232,6 +232,8 @@ class NetworkTrafficAnalyzer:
                 }
                 violations.append(violation)
         self.policy_violations = violations
+        self.log_audit_event('system', 'DETECT_VIOLATIONS', details=f'найдено {len(violations)} нарушений')
+        
         return violations
 
     def analyze_traffic_patterns(self):
@@ -309,6 +311,8 @@ class NetworkTrafficAnalyzer:
         print(f"Предприятие: {self.company_name}")
         print(f"Период анализа: {self.traffic_df['timestamp'].min()} - {self.traffic_df['timestamp'].max()}")
         print(f"Всего событий: {len(self.traffic_df)}")
+
+        self.log_audit_event('system', 'GENERATE_REPORT', details=f'{len(self.traffic_df)} событий')
 
         # Сводка по нарушениям
         if self.policy_violations:

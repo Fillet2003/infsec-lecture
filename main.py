@@ -17,6 +17,7 @@ def main():
     analyzer.inject_ddos_burst()
 
     # Анализ трафика
+    analyzer.init_audit_log()
     analyzer.analyze_traffic_patterns()
 
     # Обнаружение нарушений
