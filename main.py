@@ -14,12 +14,14 @@ def main():
 
     # Генерация имитационных данных
     traffic_data = analyzer.simulate_traffic_data(hours=24, users=50)
+    analyzer.inject_ddos_burst()
 
     # Анализ трафика
     analyzer.analyze_traffic_patterns()
 
     # Обнаружение нарушений
     violations = analyzer.detect_policy_violations()
+    analyzer.DDoS_analysis()
 
     # Генерация отчета
     analyzer.generate_security_report()
