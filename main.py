@@ -1,5 +1,6 @@
 from NetworkTrafficAnalyser import NetworkTrafficAnalyzer
 from BiometryIntegration import BiometricAuthModule
+from CloudIntegration import CloudIntegrationModule
 
 def main():
     """
@@ -15,6 +16,7 @@ def main():
     scanner = BiometricAuthModule(analyzer=analyzer)
 
     scanner.authenticate(user_id=123)
+    analyzer.cloud.sync()
 
     # Генерация имитационных данных
     traffic_data = analyzer.simulate_traffic_data(hours=24, users=50)

@@ -13,3 +13,15 @@
 {"timestamp": "2026-11-23T20:55:23.481353", "user": "system", "action": "DETECT_VIOLATIONS", "result": "SUCCESS", "details": "найдено 8 нарушений"}
 {"timestamp": "2026-11-23T20:55:23.489687", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[CRITICAL] ТехноПрофи: Обнаружено 2 нарушений"}
 {"timestamp": "2026-11-23T20:55:23.493608", "user": "system", "action": "GENERATE_REPORT", "result": "SUCCESS", "details": "15000 событий"}
+{"timestamp": "2026-11-23T21:04:42.169529", "user": 123, "action": "BIOMETRIC_AUTH", "result": "DENIED", "details": "score=0.59"}
+{"timestamp": "2026-11-23T21:04:42.169870", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[WARNING] ТехноПрофи: Биометрия не пройдена: 123 (score=0.59)"}
+{"timestamp": "2026-11-23T21:06:16.283298", "user": 123, "action": "BIOMETRIC_AUTH", "result": "SUCCESS", "details": "score=0.92"}
+{"timestamp": "2026-11-23T21:06:31.372578", "user": 123, "action": "BIOMETRIC_AUTH", "result": "SUCCESS", "details": "score=0.94"}
+{"timestamp": "2026-11-23T21:06:31.377803", "user": "system", "action": "CLOUD_FETCH", "result": "SUCCESS", "details": "AWS: 500 событий"}
+{"timestamp": "2026-11-23T21:07:22.558580", "user": 123, "action": "BIOMETRIC_AUTH", "result": "DENIED", "details": "score=0.58"}
+{"timestamp": "2026-11-23T21:07:22.558989", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[WARNING] ТехноПрофи: Биометрия не пройдена: 123 (score=0.58)"}
+{"timestamp": "2026-11-23T21:07:22.563844", "user": "system", "action": "CLOUD_FETCH", "result": "SUCCESS", "details": "AWS: 500 событий"}
+{"timestamp": "2026-11-23T21:07:23.295169", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[CRITICAL] ТехноПрофи: Обнаружено 8 нарушений"}
+{"timestamp": "2026-11-23T21:07:23.295626", "user": "system", "action": "DETECT_VIOLATIONS", "result": "SUCCESS", "details": "найдено 8 нарушений"}
+{"timestamp": "2026-11-23T21:07:23.465254", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[CRITICAL] ТехноПрофи: Обнаружено 2 нарушений"}
+{"timestamp": "2026-11-23T21:07:23.468662", "user": "system", "action": "GENERATE_REPORT", "result": "SUCCESS", "details": "15000 событий"}

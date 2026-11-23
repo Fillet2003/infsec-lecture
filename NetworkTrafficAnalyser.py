@@ -12,6 +12,7 @@ import warnings
 import requests
 warnings.filterwarnings('ignore')
 import json
+from CloudIntegration import CloudIntegrationModule
 """
 Для реального применения потребуются дополнительные библиотеки:
 scapy, dpkt, pyshark (для анализа пакетов)
@@ -47,6 +48,8 @@ class NetworkTrafficAnalyzer:
         'data_exfiltration': {'threshold': 524288000, 'window_minutes': 60} # 500 МБ
         }
         self.init_audit_log(path=path)
+        self.simulate_traffic_data()
+        self.cloud = CloudIntegrationModule(self, provider='AWS')
 
         print(f"Инициализирован анализатор трафика для: {company_name}")
         print(f"Время запуска: {datetime.now()}")
