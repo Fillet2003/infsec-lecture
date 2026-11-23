@@ -22,7 +22,7 @@ class NetworkTrafficAnalyzer:
     """
     Класс для анализа сетевого трафика предприятия
     """
-    def __init__(self, company_name="ТехноПрофи"):
+    def __init__(self, company_name="ТехноПрофи", path="audit.log"):
         """
         Инициализация анализатора трафика
         Параметры:
@@ -46,6 +46,8 @@ class NetworkTrafficAnalyzer:
         'ddos_attack': {'threshold': 1000, 'window_minutes': 1},
         'data_exfiltration': {'threshold': 524288000, 'window_minutes': 60} # 500 МБ
         }
+        self.init_audit_log(path=path)
+
         print(f"Инициализирован анализатор трафика для: {company_name}")
         print(f"Время запуска: {datetime.now()}")
 

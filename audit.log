@@ -4,3 +4,12 @@
 {"timestamp": "2026-11-21T12:52:55.730748", "user": "system", "action": "DETECT_VIOLATIONS", "result": "SUCCESS", "details": "найдено 7 нарушений"}
 {"timestamp": "2026-11-21T12:52:55.737485", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[CRITICAL] ТехноПрофи: Обнаружено 1 нарушений"}
 {"timestamp": "2026-11-21T12:52:55.741995", "user": "system", "action": "GENERATE_REPORT", "result": "SUCCESS", "details": "15000 событий"}
+{"timestamp": "2026-11-23T20:51:32.974053", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[CRITICAL] ТехноПрофи: Обнаружено 8 нарушений"}
+{"timestamp": "2026-11-23T20:51:32.975083", "user": "system", "action": "DETECT_VIOLATIONS", "result": "SUCCESS", "details": "найдено 8 нарушений"}
+{"timestamp": "2026-11-23T20:51:32.985952", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[CRITICAL] ТехноПрофи: Обнаружено 1 нарушений"}
+{"timestamp": "2026-11-23T20:51:33.003318", "user": "system", "action": "GENERATE_REPORT", "result": "SUCCESS", "details": "15000 событий"}
+{"timestamp": "2026-11-23T20:55:22.817456", "user": 123, "action": "BIOMETRIC_AUTH", "result": "SUCCESS", "details": "score=0.86"}
+{"timestamp": "2026-11-23T20:55:23.480914", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[CRITICAL] ТехноПрофи: Обнаружено 8 нарушений"}
+{"timestamp": "2026-11-23T20:55:23.481353", "user": "system", "action": "DETECT_VIOLATIONS", "result": "SUCCESS", "details": "найдено 8 нарушений"}
+{"timestamp": "2026-11-23T20:55:23.489687", "user": "system", "action": "SEND_ALERT", "result": "SUCCESS", "details": "[CRITICAL] ТехноПрофи: Обнаружено 2 нарушений"}
+{"timestamp": "2026-11-23T20:55:23.493608", "user": "system", "action": "GENERATE_REPORT", "result": "SUCCESS", "details": "15000 событий"}
