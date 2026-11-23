@@ -1,4 +1,6 @@
 from NetworkTrafficAnalyser import NetworkTrafficAnalyzer
+from BiometryIntegration import BiometricAuthModule
+from CloudIntegration import CloudIntegrationModule
 
 def main():
     """
@@ -9,17 +11,24 @@ def main():
     print("Учебный кейс для дисциплины 'Обеспечение ИБ бизнес-процессов'")
     print("="*70)
 
-    # Инициализация анализатора
+    # Инициализация
     analyzer = NetworkTrafficAnalyzer(company_name="ТехноПрофи")
+    scanner = BiometricAuthModule(analyzer=analyzer)
+
+    scanner.authenticate(user_id=123)
+    analyzer.cloud.sync()
+    analyzer.threat_intel.enrich()
 
     # Генерация имитационных данных
     traffic_data = analyzer.simulate_traffic_data(hours=24, users=50)
+    analyzer.inject_ddos_burst()
 
     # Анализ трафика
     analyzer.analyze_traffic_patterns()
 
     # Обнаружение нарушений
     violations = analyzer.detect_policy_violations()
+    analyzer.DDoS_analysis()
 
     # Генерация отчета
     analyzer.generate_security_report()

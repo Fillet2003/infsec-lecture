@@ -9,7 +9,11 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from collections import defaultdict
 import warnings
+import requests
 warnings.filterwarnings('ignore')
+import json
+from CloudIntegration import CloudIntegrationModule
+from ThreatsDBIntegration import ThreatIntelModule
 """
 Для реального применения потребуются дополнительные библиотеки:
 scapy, dpkt, pyshark (для анализа пакетов)
@@ -20,7 +24,7 @@ class NetworkTrafficAnalyzer:
     """
     Класс для анализа сетевого трафика предприятия
     """
-    def __init__(self, company_name="ТехноПрофи"):
+    def __init__(self, company_name="ТехноПрофи", path="audit.log"):
         """
         Инициализация анализатора трафика
         Параметры:
@@ -44,6 +48,11 @@ class NetworkTrafficAnalyzer:
         'ddos_attack': {'threshold': 1000, 'window_minutes': 1},
         'data_exfiltration': {'threshold': 524288000, 'window_minutes': 60} # 500 МБ
         }
+        self.init_audit_log(path=path)
+        self.simulate_traffic_data()
+        self.cloud = CloudIntegrationModule(self, provider='AWS')
+        self.threat_intel = ThreatIntelModule(self)
+
         print(f"Инициализирован анализатор трафика для: {company_name}")
         print(f"Время запуска: {datetime.now()}")
 
@@ -122,6 +131,41 @@ class NetworkTrafficAnalyzer:
         print(f"Сгенерировано {len(self.traffic_df)} записей трафика")
         return self.traffic_df
 
+    def inject_ddos_burst(self, n_packets=5000, target_ip='10.0.0.15'):
+        """Всплеск трафика для проверки детектора DDoS."""
+        now = datetime.now()
+        burst = pd.DataFrame({
+            'timestamp': [now - timedelta(microseconds=i * 100) for i in range(n_packets)],
+            'source_ip': [f'10.0.0.{np.random.randint(1, 250)}' for _ in range(n_packets)],
+            'destination_ip': [target_ip] * n_packets,
+            'protocol': ['HTTP'] * n_packets,
+            'port': [80] * n_packets,
+            'size_bytes': np.random.randint(64, 1500, n_packets),
+            'department': ['внешний'] * n_packets,
+        })
+        self.traffic_df = pd.concat([self.traffic_df, burst], ignore_index=True)
+        self.traffic_df = self.traffic_df.sort_values('timestamp').reset_index(drop=True)
+        print(f"💥 Внедрён всплеск из {n_packets} пакетов за ~0.5 сек")
+
+    def init_audit_log(self, path='audit.log'):
+        """Инициализация журнала аудита."""
+        self.audit_log_path = path
+        self.audit_log = []
+
+    def log_audit_event(self, user, action, result='SUCCESS', details=''):
+        """Запись события аудита (кто, что, когда, результат)."""
+        event = {
+            'timestamp': datetime.now().isoformat(),
+            'user': user,          # кто
+            'action': action,      # что (LOGIN, VIEW_REPORT, CHANGE_POLICY...)
+            'result': result,      # SUCCESS / FAILURE / DENIED
+            'details': details,    # контекст
+        }
+        self.audit_log.append(event)
+        with open(self.audit_log_path, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(event, ensure_ascii=False) + '\n')
+        return event
+
     def detect_policy_violations(self):
         """
         Обнаружение нарушений политик безопасности
@@ -195,8 +239,14 @@ class NetworkTrafficAnalyzer:
                     'severity': 'HIGH'
                 }
                 violations.append(violation)
-            self.policy_violations = violations
-            return violations
+        self.policy_violations = violations
+
+        if violations:
+            self.send_alert(f"Обнаружено {len(violations)} нарушений", level='CRITICAL')
+
+        self.log_audit_event('system', 'DETECT_VIOLATIONS', details=f'найдено {len(violations)} нарушений')
+
+        return violations
 
     def analyze_traffic_patterns(self):
         """
@@ -246,6 +296,26 @@ class NetworkTrafficAnalyzer:
             print(f"🚨 ПРЕВЫШЕН ЛИМИТ ВНЕШНЕГО ТРАФИКА!")
 
         return analysis_results
+
+    def DDoS_analysis(self):
+        """DDoS: пакетов в секунду vs порог."""
+        df = self.traffic_df.copy()
+        df['sec'] = df['timestamp'].dt.floor('1s')
+        pps = df.groupby('sec').size()                        # пакетов в каждой секунде
+        threshold = self.anomaly_patterns['ddos_attack']['threshold'] / 60  # 1000/мин -> pps
+        attacks = pps[pps > threshold]
+        for ts, count in attacks.items():
+            self.policy_violations.append({
+                'type': 'DDOS_ATTACK', 'timestamp': ts,
+                'source': 'network', 'details': f'{count} пак./сек',
+                'severity': 'HIGH' if count < threshold * 2 else 'CRITICAL',
+            })
+        print(f"🚨 DDoS: {len(attacks)} секунд с превышением PPS (порог {threshold:.1f})")
+
+        if not attacks.empty:
+            self.send_alert(f"Обнаружено {len(attacks)} нарушений", level='CRITICAL')
+
+        return attacks
     
     def generate_security_report(self):
         """
@@ -257,6 +327,8 @@ class NetworkTrafficAnalyzer:
         print(f"Предприятие: {self.company_name}")
         print(f"Период анализа: {self.traffic_df['timestamp'].min()} - {self.traffic_df['timestamp'].max()}")
         print(f"Всего событий: {len(self.traffic_df)}")
+
+        self.log_audit_event('system', 'GENERATE_REPORT', details=f'{len(self.traffic_df)} событий')
 
         # Сводка по нарушениям
         if self.policy_violations:
@@ -302,7 +374,35 @@ class NetworkTrafficAnalyzer:
             print(f"{i}. {rec}")
 
         return recommendations
-    
+
+    def send_alert(self, message, level='WARNING'):
+        """Отправка оповещения в Telegram (и Slack, если настроен)."""
+        text = f"[{level}] {self.company_name}: {message}"
+
+        # Telegram
+        if getattr(self, 'tg_token', None) and getattr(self, 'tg_chat_id', None):
+            try:
+                requests.post(
+                    f"https://api.telegram.org/bot{self.tg_token}/sendMessage",
+                    json={'chat_id': self.tg_chat_id, 'text': text},
+                    timeout=5,
+                )
+            except requests.RequestException as e:
+                print(f"⚠️ Telegram недоступен: {e}")
+
+        # Slack (входящий webhook)
+        if getattr(self, 'slack_webhook', None):
+            try:
+                requests.post(self.slack_webhook,
+                            json={'text': text}, timeout=5)
+            except requests.RequestException as e:
+                print(f"⚠️ Slack недоступен: {e}")
+
+        # связываем с п.2 — пишем в аудит
+        self.log_audit_event('system', 'SEND_ALERT',
+                            result='SUCCESS', details=text[:100])
+        return text
+
     def visualize_traffic(self):
         """
         Визуализация данных трафика
