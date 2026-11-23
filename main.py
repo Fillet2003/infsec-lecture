@@ -17,6 +17,7 @@ def main():
 
     scanner.authenticate(user_id=123)
     analyzer.cloud.sync()
+    analyzer.threat_intel.enrich()
 
     # Генерация имитационных данных
     traffic_data = analyzer.simulate_traffic_data(hours=24, users=50)
